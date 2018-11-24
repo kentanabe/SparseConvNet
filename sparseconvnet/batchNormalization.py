@@ -34,8 +34,8 @@ class BatchNormalization(Module):
         self.momentum = momentum
         self.affine = affine
         self.leakiness = leakiness
-        self.register_buffer("running_mean", torch.Tensor(nPlanes).fill_(0))
-        self.register_buffer("running_var", torch.Tensor(nPlanes).fill_(1))
+        self.register_buffer("runningMean", torch.Tensor(nPlanes).fill_(0))
+        self.register_buffer("runningVar", torch.Tensor(nPlanes).fill_(1))
         if affine:
             self.weight = Parameter(torch.Tensor(nPlanes).fill_(1))
             self.bias = Parameter(torch.Tensor(nPlanes).fill_(0))
@@ -177,7 +177,7 @@ class MeanOnlyBNLeakyReLU(Module):
         Module.__init__(self)
         self.nPlanes = nPlanes
         self.momentum = momentum
-        self.register_buffer("running_mean", torch.Tensor(nPlanes).fill_(0))
+        self.register_buffer("runningMean", torch.Tensor(nPlanes).fill_(0))
         self.affine = affine
         if affine:
             self.bias = Parameter(torch.Tensor(nPlanes).fill_(0))
