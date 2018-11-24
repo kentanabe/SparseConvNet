@@ -49,8 +49,8 @@ class BatchNormalization(Module):
             input.features,
             optionalTensor(self, 'weight'),
             optionalTensor(self, 'bias'),
-            self.running_mean,
-            self.running_var,
+            self.runningMean,
+            self.runningVar,
             self.eps,
             self.momentum,
             self.training,
@@ -190,10 +190,10 @@ class MeanOnlyBNLeakyReLU(Module):
         if self.training:
             with torch.no_grad():
                 m=input.features.mean(0)
-                self.running_mean=self.running_mean*self.momentum+m*(1-self.momentum)
+                self.runningMean=self.runningMean*self.momentum+m*(1-self.momentum)
             output.features = input.features - m
         else:
-            output.features = input.features - self.running_mean
+            output.features = input.features - self.runningMean
         if self.affine:
             output_features = output_features + self.bias
         if self.leakiness != 1:
