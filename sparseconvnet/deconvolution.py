@@ -21,7 +21,7 @@ class Deconvolution(Module):
         self.filter_stride = toLongTensor(dimension, filter_stride)
         std = (2.0 / nIn / self.filter_volume)**0.5
         self.weight = Parameter(torch.Tensor(
-            self.filter_volume, nIn, nOut).normal_(
+            self.filter_volume * nIn, nOut).normal_(
             0,
             std))
         if bias:
@@ -35,7 +35,7 @@ class Deconvolution(Module):
             (input.spatial_size - 1) * self.filter_stride + self.filter_size
         output.features = DeconvolutionFunction.apply(
             input.features,
-            self.weight,
+            self.weight.view(self.filter_volume, self.nIn, self.nOut),
             optionalTensor(self, 'bias'),
             input.metadata,
             input.spatial_size,

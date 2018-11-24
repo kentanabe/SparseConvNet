@@ -21,7 +21,7 @@ class Convolution(Module):
         self.filter_stride = toLongTensor(dimension, filter_stride)
         std = (2.0 / nIn / self.filter_volume)**0.5
         self.weight = Parameter(torch.Tensor(
-            self.filter_volume, nIn, nOut).normal_(
+            self.filter_volume * nIn, nOut).normal_(
             0,
             std))
         if bias:
@@ -37,7 +37,7 @@ class Convolution(Module):
                 self.filter_size == input.spatial_size).all(), (input.spatial_size,output.spatial_size,self.filter_size,self.filter_stride)
         output.features = ConvolutionFunction.apply(
             input.features,
-            self.weight,
+            self.weight.view(self.filter_volume, self.nIn, self.nOut),
             optionalTensor(self, 'bias'),
             input.metadata,
             input.spatial_size,

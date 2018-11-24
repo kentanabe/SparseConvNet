@@ -23,7 +23,7 @@ class SubmanifoldConvolution(Module):
         self.filter_volume = self.filter_size.prod().item()
         std = (2.0 / nIn / self.filter_volume)**0.5
         self.weight = Parameter(torch.Tensor(
-            self.filter_volume, nIn, nOut
+            self.filter_volume * nIn, nOut
         ).normal_(0, std))
         if bias:
             self.bias = Parameter(torch.Tensor(nOut).zero_())
@@ -35,7 +35,7 @@ class SubmanifoldConvolution(Module):
         output.spatial_size = input.spatial_size
         output.features = SubmanifoldConvolutionFunction.apply(
             input.features,
-            self.weight,
+            self.weight.view(self.filter_volume, self.nIn, self.nOut),
             optionalTensor(self, 'bias'),
             input.metadata,
             input.spatial_size,
